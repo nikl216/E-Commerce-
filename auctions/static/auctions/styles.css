@@ -1,0 +1,14 @@
+body {
+    padding: 10px;
+}
+.listings{
+    
+}
+.listings  a{
+    text-decoration: none;
+    color: inherit; 
+}
+
+.row-fluid{
+    text-align: center;
+}

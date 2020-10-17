@@ -1,0 +1,78 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<h2>Listings: {{listing.title}}</h2>
+<div class="row m-0">
+    {% if iswatchlisted is False %}
+    <form action="{% url 'add_watchlist' listing.pk %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn-sm py-0 ml-3 m-2 btn-primary watchlist_button">watchlist</button>
+    </form>
+    {% else %}
+    <form action="{% url 'remove_watchlist' listing.pk %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn-sm py-0 ml-3 m-2 btn-primary watchlist_button">Remove from watchlist</button>
+    </form>
+
+
+    {% endif %}
+    {% if isowner and closed is False %}
+    <form action="{% url 'close_auction' listing.pk %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn-sm py-0 m-2 btn-primary watchlist_button">Close auction</button>
+    
+    </form>
+    {% endif %}
+</div>
+
+<div class="row-fluid">
+    <img src="{{ listing.image_url }}" alt="listing image">
+</div>
+<div class="col-4">
+    <p><h5>{{ listing.title }}</h5></p>
+    <p><div>{{ listing.description }}</div></p>
+    <p><div><h3>Price: $ {{ bid}}</h3> </div></p>
+    {% if closed is False %}
+    <div>{{bidcount}} bids so far.</div>
+    <form class="form-group" action="{% url 'listing_page' listing.pk %}" method="POST">
+        {% csrf_token %}
+        {{form}}
+        {% if message %}
+        {{ message }}
+        {% endif %}
+        <div><button class="btn m-2 btn-primary" type="submit">Place Bid</button></div>
+    </form>
+    
+    <h3>Details:</h3>
+    <ul>
+    <li>created by <span style="color: blue;">{{ created_by.username}}</li>
+    {% if listing.category %}
+    <li>category: {{ listing.category }}</li>
+    {% else %}
+    <li>category: No category Listed</li>
+    {% endif %}
+    </ul>
+    <h3>Comments:</h3>
+    <ul>
+    {% for comment in comments%}
+    <li>{{comment.comment}} -By <span style="color: blue;">{{comment.user.username}}</span></li> 
+    
+    {% endfor %}
+</ul>
+    <form action="{% url 'add_comment' listing.pk%}" method="post">
+    {% csrf_token %}
+    <input type='text' name='comment' class='form-control' placeholder="Enter comment" autocomplete="off">
+    <button  type='submit' class='m-2 btn btn-primary'>Comment</button>
+    </form>
+    {% else %}
+    <p>This auction is closed</p>
+    {% endif %}
+    {% if iswinner %}
+    <p>Congrats, You have won this Auction</p>
+    {% endif %}
+   
+</div>
+
+
+
+{% endblock %}
